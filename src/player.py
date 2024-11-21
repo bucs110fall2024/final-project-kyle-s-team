@@ -1,6 +1,10 @@
-class Player:
+import pygame
+class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y, img_file):
+        super().__init__()
+        #self.image = pygame.image.load(f"assets/{name}.png")
+        #self.rect = self.image.get_rect()
         """
         Initialize player:
         - x: int - starting x coordinate

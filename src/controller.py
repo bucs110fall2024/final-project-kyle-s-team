@@ -1,15 +1,22 @@
 import pygame
-from player import Player
-from gun import Gun
-from enemy import Enemy
+from src.player import Player
+from src.gun import Gun
+from src.enemy import Enemy
 
 class Controller:
 
     def __init__(self):
+        #self.clouds = pygame.sprite.Group() --> list that only holds sprites
+        #self.enemy = pygame.sprite.Group()
+        pygame.init()
+        pygame.event.pump()
+        self.screen = pygame.display.set_mode()
+
         """
         Setup all pygame stuff and initilizes objects
         """
     def mainloop(self):
+        #pygame.sprite.spritecollide(player, self.enemy, True) --> return a list of all collisions, delete things that collide with it with True
         """
         Select state loop
         """
