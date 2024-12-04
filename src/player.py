@@ -3,14 +3,16 @@ import pygame
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, groups, collision_sprites):
+
         super().__init__(groups)
         self.image = pygame.image.load("assets/PlayerIdle/idle_0.png")
+        # self.image = pygame.image.load("assets/PlayerIdle/test.png")
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.rect = self.image.get_rect()
         self.rect.center = pos
         #Create new hitbox to fix broken sprite collisions
         self.hitbox_rect = self.rect.inflate(-150, -50)
-
+        self.rect.center = self.hitbox_rect.center
         #Player movement
         self.direction = pygame.Vector2(1, 0)
         self.speed = 400
@@ -27,7 +29,6 @@ class Player(pygame.sprite.Sprite):
         if self.direction:
             self.direction = self.direction.normalize()
 
-
     def move(self, dt):
         self.hitbox_rect.x += self.direction.x * self.speed * dt
         self.collision("horizontal")
@@ -38,7 +39,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, dt):
         self.input()
         self.move(dt)
-
+        
     def collision(self, direction):
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
@@ -47,7 +48,7 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox_rect.right = sprite.rect.left
                     if self.direction.x < 0:
                         self.hitbox_rect.left = sprite.rect.right
-                else:
+                elif direction == "vertical":
                     if self.direction.y > 0:
                         self.hitbox_rect.bottom = sprite.rect.top
                     if self.direction.y < 0:

@@ -6,3 +6,4 @@ class SpriteCollision(pygame.sprite.Sprite):
         self.image = pygame.Surface(size)
         self.image.fill("blue")
         self.rect = self.image.get_rect(center = pos)
+        pygame.draw.rect(self.image, (255, 0, 0), self.rect, 2)
