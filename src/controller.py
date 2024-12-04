@@ -1,35 +1,49 @@
 import pygame
 from src.player import Player
-from src.gun import Gun
-from src.enemy import Enemy
+from src import gun
+from src import enemy
 
-class Controller:
 
-    def __init__(self):
-        #self.clouds = pygame.sprite.Group() --> list that only holds sprites
-        #self.enemy = pygame.sprite.Group()
-        pygame.init()
-        pygame.event.pump()
-        self.screen = pygame.display.set_mode()
+def Controller():
+    # Initialize pygame
+    pygame.init()
 
-        """
-        Setup all pygame stuff and initilizes objects
-        """
-    def mainloop(self):
-        #pygame.sprite.spritecollide(player, self.enemy, True) --> return a list of all collisions, delete things that collide with it with True
-        """
-        Select state loop
-        """
-    # while(True):
-    #     #1. Handle events
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             exit()
+    # Setup window
+    WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    pygame.display.set_caption("Vampire Survivors Type Game")
 
-      #2. detect collisions and update models
+    # Setup clock for controlling frame rate
+    clock = pygame.time.Clock()
 
-      #3. Redraw next frame
+    # Create sprite group
+    all_sprites = pygame.sprite.Group()
 
-      #4. Display next frame
-        # pygame.display.flip()
+    # Create player instance at position (400, 300) and add to sprite group
+    player_instance = Player((400, 300), all_sprites)
+
+    # Game loop
+    running = True
+    while running:
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # Clear the screen (black background)
+        screen.fill((0, 0, 0))
+
+        # Update all sprites (not needed in this simple case, but can be useful)
+        all_sprites.update()
+
+        # Draw all sprites to the screen
+        all_sprites.draw(screen)
+
+        # Update the display
+        pygame.display.update()
+
+        # Control frame rate (60 FPS)
+        clock.tick(60)
+
+    # Quit pygame
+    pygame.quit()

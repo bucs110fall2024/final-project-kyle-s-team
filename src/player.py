@@ -1,16 +1,15 @@
 import pygame
+
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, img_file):
-        super().__init__()
-        #self.image = pygame.image.load(f"assets/{name}.png")
-        #self.rect = self.image.get_rect()
-        """
-        Initialize player:
-        - x: int - starting x coordinate
-        - y: int - starting y coordinate
-        - img_file: str - path to img file
-        """
+    def __init__(self, pos, groups):
+        super().__init__(groups)
+        self.image = pygame.image.load("assets/PlayerIdle/idle_0.png")
+        self.image = pygame.transform.scale(self.image, (200, 200))
+        self.rect = self.image.get_rect()
+        self.rect.center = pos  # Position the player sprite
+
+
 
     def move(self):
         """

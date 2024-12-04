@@ -1,4 +1,7 @@
-from src.controller import Controller
+from src import controller
 
 def main():
-    pass
+    game = controller.Controller()
+    game.mainloop()
+
+main()
