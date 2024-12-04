@@ -6,6 +6,7 @@ from src import gun
 from src import enemy
 from src.sprites import *
 from pytmx.util_pygame import load_pygame
+from src.groups import AllSprites
 
 class Controller():
     def __init__(self):
@@ -17,7 +18,8 @@ class Controller():
         self.running = True
 
         #Groups
-        self.all_sprites = pygame.sprite.Group()
+        # self.all_sprites = pygame.sprite.Group()
+        self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
 
         self.setup()
@@ -55,7 +57,8 @@ class Controller():
             self.all_sprites.update(delta_time)
 
             # Draw all sprites to the screen
-            self.all_sprites.draw(self.screen)
+            # self.all_sprites.draw(self.screen)
+            self.all_sprites.draw(self.player.rect.center)
 
             # Update the display
             pygame.display.update()
