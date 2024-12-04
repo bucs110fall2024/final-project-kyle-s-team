@@ -5,6 +5,7 @@ Features - 1. Start menu 2. Enemies with collision 3. Movable player (topdown) 4
 Credit:
 
 All artwork and animations (CC0) - https://rgsdev.itch.io/free-cc0-modular-animated-vector-characters-2d
+Tileset (CC0)- https://monsteretro.itch.io/willibabs-free-leftovers (Used the software Tiled in order to create the map, using a tutorial to see how to implement it with Python using pytmx)
 Sound effects - Made by me with the software LabChirp
 Music - Made by me with the software Famistudio
 
