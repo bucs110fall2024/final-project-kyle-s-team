@@ -2,15 +2,19 @@ import pygame
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, pos, groups):
+    def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
         self.image = pygame.image.load("assets/PlayerIdle/idle_0.png")
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.rect = self.image.get_rect()
         self.rect.center = pos
+        #Create new hitbox to fix broken sprite collisions
+        self.hitbox_rect = self.rect.inflate(-150, -50)
 
+        #Player movement
         self.direction = pygame.Vector2(1, 0)
         self.speed = 400
+        self.collision_sprites = collision_sprites
 
 
 
@@ -25,19 +29,29 @@ class Player(pygame.sprite.Sprite):
 
 
     def move(self, dt):
-        self.rect.center += self.direction * self.speed * dt
+        self.hitbox_rect.x += self.direction.x * self.speed * dt
+        self.collision("horizontal")
+        self.hitbox_rect.y += self.direction.y * self.speed * dt
+        self.collision("vertical")
+        self.rect.center = self.hitbox_rect.center
 
     def update(self, dt):
         self.input()
         self.move(dt)
 
     def collision(self, direction):
-        """
-        See if player's hitbox collides with another object, like a wall
-        or an enemy. Use direction variable so you move in the correct
-        direction when a collision occurs.
-        """
-
+        for sprite in self.collision_sprites:
+            if sprite.rect.colliderect(self.hitbox_rect):
+                if direction == "horizontal":
+                    if self.direction.x > 0:
+                        self.hitbox_rect.right = sprite.rect.left
+                    if self.direction.x < 0:
+                        self.hitbox_rect.left = sprite.rect.right
+                else:
+                    if self.direction.y > 0:
+                        self.hitbox_rect.bottom = sprite.rect.top
+                    if self.direction.y < 0:
+                        self.hitbox_rect.top = sprite.rect.bottom
     def shoot(self):
         """
         Creates a bullet object and returns Bullet
