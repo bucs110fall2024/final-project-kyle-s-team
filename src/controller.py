@@ -40,6 +40,7 @@ class Controller():
         for obj in map.get_layer_by_name("Object Layer 1"):
             SpriteCollision((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
     
+         
     # Game loop
     def mainloop(self):
         while self.running:
