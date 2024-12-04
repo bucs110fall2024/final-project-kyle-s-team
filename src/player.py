@@ -14,14 +14,21 @@ class Player(pygame.sprite.Sprite):
 
 
 
-    def input(self, dt):
-        pass
+    def input(self):
+        #Player control
+        keys = pygame.key.get_pressed()
+        self.direction.x = int(keys[pygame.K_RIGHT] - int(keys[pygame.K_LEFT]))
+        self.direction.y = int(keys[pygame.K_DOWN] - int(keys[pygame.K_UP]))
+        #Fix diagonal speed
+        if self.direction:
+            self.direction = self.direction.normalize()
+
 
     def move(self, dt):
         self.rect.center += self.direction * self.speed * dt
 
     def update(self, dt):
-        # self.input()
+        self.input()
         self.move(dt)
 
     def collision(self, direction):
