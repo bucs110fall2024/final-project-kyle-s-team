@@ -7,15 +7,22 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("assets/PlayerIdle/idle_0.png")
         self.image = pygame.transform.scale(self.image, (200, 200))
         self.rect = self.image.get_rect()
-        self.rect.center = pos  # Position the player sprite
+        self.rect.center = pos
+
+        self.direction = pygame.Vector2(1, 0)
+        self.speed = 400
 
 
 
-    def move(self):
-        """
-        Get whatever key is pressed and determine the direction to move
-        based on that key. Direction stored in a variable.
-        """
+    def input(self, dt):
+        pass
+
+    def move(self, dt):
+        self.rect.center += self.direction * self.speed * dt
+
+    def update(self, dt):
+        # self.input()
+        self.move(dt)
 
     def collision(self, direction):
         """
