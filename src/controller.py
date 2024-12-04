@@ -25,19 +25,19 @@ class Controller():
         #Sprites
         self.player = Player((300, 300), self.all_sprites, self.collision_sprites)
 
-        # for i in range(6):
-        #     x, y = random.randint(0, WINDOW_WIDTH), random.randint(0, WINDOW_HEIGHT)
-        #     w, h = random.randint(60, 100), random.randint(50, 100)
-        #     SpriteCollision((x, y), (w, h), (self.all_sprites, self.collision_sprites))
-
 
     def setup(self):
+        TILE_SIZE = 48
         map = load_pygame("assets/world.tmx")
+        
+        #Ground/Background
+        for x, y, image in map.get_layer_by_name("Tile Layer 1").tiles():
+            Sprite((x * TILE_SIZE, y * TILE_SIZE), image, self.all_sprites)
 
+        #Walls
         for obj in map.get_layer_by_name("Object Layer 1"):
             SpriteCollision((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
-
-
+    
     # Game loop
     def mainloop(self):
         while self.running:
