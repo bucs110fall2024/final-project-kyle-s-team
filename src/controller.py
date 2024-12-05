@@ -108,6 +108,7 @@ class Controller():
         Sets up images to be used later
         """""
         self.bullet_surface = pygame.image.load("assets/Gun/bullet.png").convert_alpha()
+        self.bullet_surface = pygame.transform.scale(self.bullet_surface, (30, 30))
 
             # Load enemy frames from assets/EnemyWalk/
         self.enemy_frames = []
@@ -263,14 +264,13 @@ class Controller():
         Checks if bullets collide with enemies and deletes the enemy if there is a collision
         """""
         for bullet in self.bullet_sprites:
-            if bullet.active:
-                # Check collision with each enemy
-                for enemy in self.enemy_sprites:
-                    if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
-                        enemy.destroy()
-                        bullet.deactivate()
-                        self.score += 1
-                        break
+            # Check collision with each enemy
+            for enemy in self.enemy_sprites:
+                if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
+                    enemy.destroy()
+                    bullet.kill()
+                    self.score += 1
+                    break
 
     def player_collision(self):
         """""

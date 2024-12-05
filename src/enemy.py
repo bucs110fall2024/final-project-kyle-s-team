@@ -1,9 +1,9 @@
 import pygame
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, frames, groups, player, collision_sprites, scale_factor=0.1):
+    def __init__(self, pos, frames, groups, player, collision_sprites, scale_factor=0.08):
         super().__init__(groups)
-        self.image = pygame.image.load("assets/EnemyIdle/idle_0.png")
+        self.image = pygame.image.load("assets/EnemyIdle/idle.png")
         self.player = player
         self.frames = [pygame.transform.scale(frame, 
                       (int(frame.get_width() * scale_factor), int(frame.get_height() * scale_factor))) 
@@ -22,28 +22,33 @@ class Enemy(pygame.sprite.Sprite):
         self.death_time = 0
         self.death_duration = 400
 
+        #Delay collision detection to avoid instakills
+        self.spawn_time = pygame.time.get_ticks()
+        self.delay_time = 800
+
     def animate(self, dt):
-        self.frame_index += self.animation_speed * dt
-        self.image = self.frames[int(self.frame_index) % len(self.frames)]
+        if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
+            self.frame_index += self.animation_speed * dt
+            self.image = self.frames[int(self.frame_index) % len(self.frames)]
 
     def move(self, dt):
         """""
         Moves the enemy, gets it direction and updates rect position
         Includes collision logic
         """""
-        player_pos = pygame.Vector2(self.player.rect.center)
-        enemy_pos = pygame.Vector2(self.rect.center)
-        direction = player_pos - enemy_pos
-        if direction.length() > 0:
-            self.direction = direction.normalize()  #Vector math that allows for consitent movement
-        else:
-            self.direction = pygame.Vector2(0, 0)
+        if pygame.time.get_ticks() - self.spawn_time >= self.delay_time: 
+            player_pos = pygame.Vector2(self.player.rect.center)
+            enemy_pos = pygame.Vector2(self.rect.center)
+            direction = player_pos - enemy_pos
+            if direction.length() > 0:
+                self.direction = direction.normalize()  #Vector math that allows for consitent movement
+            else:
+                self.direction = pygame.Vector2(0, 0)
 
-        # self.rect.center += self.direction * self.speed * dt
-        self.rect.x += self.direction.x * self.speed * dt
-        self.collision("horizontal")
-        self.rect.y += self.direction.y * self.speed * dt
-        self.collision("vertical")
+            self.rect.x += self.direction.x * self.speed * dt
+            self.collision("horizontal")
+            self.rect.y += self.direction.y * self.speed * dt
+            self.collision("vertical")
 
     def collision(self, direction):
         for sprite in self.collision_sprites:
