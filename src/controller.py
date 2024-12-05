@@ -39,6 +39,14 @@ class Controller():
         pygame.time.set_timer(self.enemy_event, 300)
         self.spawn_positions = []
 
+        #Audio
+        self.shoot_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_3.wav")
+        self.shoot_sound.set_volume(0.01)
+        self.collision_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_1.wav")
+        self.music = pygame.mixer.Sound("assets/Sounds/Music.wav")
+        self.shoot_sound.set_volume(0.5)
+        self.music.play(loops = -1)
+
         self.load_image()
         self.setup()
 
@@ -64,6 +72,7 @@ class Controller():
         Checks for when player inputs a command on their keyboard
         """""
         if pygame.mouse.get_pressed()[0] and self.can_shoot: #Left mouse button is index 0
+            self.shoot_sound.play()
             pos = self.gun.rect.center + self.gun.player_direction * 50
             Bullet(self.bullet_surface, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
@@ -152,7 +161,7 @@ class Controller():
             self.input()
             self.all_sprites.update(delta_time)
             self.bullet_collision()
-            self.player_collision()
+            # self.player_collision()
 
             # Draw all sprites to the screen
             self.all_sprites.draw(self.player.rect.center)
