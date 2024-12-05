@@ -3,39 +3,63 @@ import random
 
 from src.player import Player
 from src.gun import Gun
-from src import enemy
+from src.enemy import Enemy
 from src.sprites import *
 from pytmx.util_pygame import load_pygame
 from src.groups import AllSprites
 
+
 class Controller():
     def __init__(self):
+        """""
+        Initialize all of the important aspects of this controller class.
+        """""
         pygame.init()
         WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Vampire Survivors Type Game")
         self.clock = pygame.time.Clock()
         self.running = True
-        self.load_image()
 
         #Groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
-
-        self.setup()
+        self.enemy_sprites = pygame.sprite.Group()
         
         #Timer to shoot gun
         self.can_shoot = True
         self.shoot_time = 0
         self.gun_reload = 100
 
+        #Timer to load enemies at a random starting position
+        self.enemy_event = pygame.event.custom_type()
+        pygame.time.set_timer(self.enemy_event, 300)
+        self.spawn_positions = []
+
+        self.load_image()
+        self.setup()
+
     #Set up images in my controller that will need to be instantiated
     def load_image(self):
+        """""
+        Sets up images to be used later
+        """""
         self.bullet_surface = pygame.image.load("assets/Gun/bullet.png").convert_alpha()
         
-
+        self.enemy_frames = {}
+        
+        self.enemy_walk_cycle = [
+            pygame.image.load("assets/EnemyWalk/walk_3.png").convert_alpha(), 
+            pygame.image.load("assets/EnemyWalk/walk_5.png").convert_alpha(),
+            pygame.transform.scale(pygame.image.load("assets/EnemyWalk/walk_3.png").convert_alpha(), (200, 200)),
+            pygame.transform.scale(pygame.image.load("assets/EnemyWalk/walk_5.png").convert_alpha(), (200, 200)),
+        ]
+ 
     def input(self):
+        """""
+        Checks for when player inputs a command on their keyboard
+        """""
         if pygame.mouse.get_pressed()[0] and self.can_shoot: #Left mouse button is index 0
             pos = self.gun.rect.center + self.gun.player_direction * 50
             Bullet(self.bullet_surface, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
@@ -44,12 +68,18 @@ class Controller():
 
 
     def gun_reload_timer(self):
+        """""
+        Makes sure you can't just spam bullets and lag out the game
+        """""
         if not self.can_shoot:
             current_time = pygame.time.get_ticks()
             if current_time - self.shoot_time >= self.gun_reload:
                 self.can_shoot = True
 
     def setup(self):
+        """""
+        Sets up the tilemap
+        """""
         TILE_SIZE = 48
         map = load_pygame("assets/world.tmx")
         
@@ -66,9 +96,14 @@ class Controller():
             if obj.name == "Player":
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
                 self.gun = Gun(self.player, self.all_sprites)
+            else:
+                self.spawn_positions.append((obj.x, obj.y))
 
     # Game loop
     def mainloop(self):
+        """""
+        Runs throughout the whole game
+        """""
         while self.running:
          # Handle events
             for event in pygame.event.get():

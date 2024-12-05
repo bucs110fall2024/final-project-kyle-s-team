@@ -59,37 +59,35 @@ Music - Made by me with the software Famistudio
         Test Description: Verify that the player can move in all 4 directions.
         Test Steps:
             1. Start the game.
-            2. Fire a bullet towards an enemy.
-            3. Verify that the bullet hits the enemy's hitbox.
-            4. Fire a bullet that misses every enemy.
-            5. Verify that no enemy collision is detected, although other collisions may occur, such as with a wall that causes the bullet to despawn.
-        Expected Outcome: The bullets should collide with enemy's properly and destroy both the enemy and bullet objects.
+            2. Fire a bullet towards a wall
+            3. Verify that the bullet doesn't collide with the wall.
+        Expected Outcome: The bullets should have specific collision use cases.
 
-    Test Case 3: Game Over Condition
+    Test Case 3: Camera
 
-        Test Description: Confirm that the game ends when the player loses all health.
+        Test Description: Confirm that the camera follows the player.
         Test Steps:
             1. Start the game.
-            2. Play until the player loses all health.
-            3. Verify that the game displays a "Game Over" message.
-        Expected Outcome: The game should display a "Game Over" message when the player loses all health.
+            2. Move around and verify the camera follows the player in all directions.
+            3. Stop moving.
+            4. Verify that the camer stays in place when the player stops moving.
+        Expected Outcome: The camera should follow the player no matter where they move to. The camera must stop moving when the player does.
     
-    Test Case 4: Menu Navigation
+    Test Case 4: Tilemap setup
 
-        Test Description: Test the navigation through the game's main menu.
+        Test Description: Test that the tilemap works properly.
         Test Steps:
             1. Start the game.
-            2. Navigate through the main menu options (Start Game, Quit).
-            3. Verify that each option is selectable and leads to the expected actions.
-        Expected Outcome: The main menu should allow the player to navigate through options and select them.
+            2. Make sure player can collide with objects of certain layers and not with others.
+            3. Make sure tilemap sprites are shwoing up properly.
+            4. Make sure that the tileset's spawn points work for entities like the player.
+        Expected Outcome: The tilemap used for the level should all for player interaction with ground to walk on as walls to block your way.
 
     Test Case 5: Collision - Player
 
-        Test Description: Test how the player interacts with enemies and walls.
+        Test Description: Test how the player interacts with walls.
         Test Steps:
             1. Start the game.
-            2. Get hit by an enemy.
-            3. Verify that the player loses health.
             4. Run into a wall.
             5. Verify that the player stops moving forward (repeat for each direction).
             6. Verify the player can't collide with objects such as their own bullets.
