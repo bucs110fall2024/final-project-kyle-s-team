@@ -41,7 +41,6 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = int(keys[pygame.K_DOWN] - int(keys[pygame.K_UP]))
         #Fix diagonal speed
         if self.direction.length() != 0:
-            print(self.direction)
             self.direction = self.direction.normalize()
         #Flip sprite
         if self.direction.x < 0 and not self.flipped:
@@ -90,7 +89,3 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.hitbox_rect.top = sprite.rect.bottom
   
-    def shoot(self):
-        """
-        Creates a bullet object and returns Bullet
-        """

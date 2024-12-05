@@ -16,15 +16,38 @@ class Controller():
         pygame.display.set_caption("Vampire Survivors Type Game")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.load_image()
 
         #Groups
-        # self.all_sprites = pygame.sprite.Group()
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
 
         self.setup()
         
+        #Timer to shoot gun
+        self.can_shoot = True
+        self.shoot_time = 0
+        self.gun_reload = 100
 
+    #Set up images in my controller that will need to be instantiated
+    def load_image(self):
+        self.bullet_surface = pygame.image.load("assets/Gun/bullet.png").convert_alpha()
+        
+
+    def input(self):
+        if pygame.mouse.get_pressed()[0] and self.can_shoot: #Left mouse button is index 0
+            pos = self.gun.rect.center + self.gun.player_direction * 50
+            Bullet(self.bullet_surface, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
+            self.can_shoot = False
+            self.shoot_time = pygame.time.get_ticks()
+
+
+    def gun_reload_timer(self):
+        if not self.can_shoot:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.shoot_time >= self.gun_reload:
+                self.can_shoot = True
 
     def setup(self):
         TILE_SIZE = 48
@@ -57,11 +80,12 @@ class Controller():
             # Clear the screen (green background)
             self.screen.fill((0, 255, 0))
 
-       
+            # Update the game
+            self.gun_reload_timer()
+            self.input()
             self.all_sprites.update(delta_time)
 
             # Draw all sprites to the screen
-            # self.all_sprites.draw(self.screen)
             self.all_sprites.draw(self.player.rect.center)
 
             # Update the display
