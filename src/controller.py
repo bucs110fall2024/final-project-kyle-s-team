@@ -42,11 +42,16 @@ class Controller():
         self.spawn_positions = []
 
         #Audio
-        self.shoot_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_3.wav")
-        self.shoot_sound.set_volume(0.01)
         self.collision_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_1.wav")
+        self.collision_sound.set_volume(0.1)
+        self.select_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_2.wav")
+        self.select_sound.set_volume(0.5)
+        self.shoot_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_3.wav")
+        self.shoot_sound.set_volume(0.2)
+        self.death_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_4.wav")
+        self.death_sound.set_volume(0.8)
         self.music = pygame.mixer.Sound("assets/Sounds/Music.wav")
-        self.shoot_sound.set_volume(0.5)
+        self.music.set_volume(0.5)
 
         #Score
         self.score = 0
@@ -153,6 +158,7 @@ class Controller():
                     quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
+                        self.select_sound.play() 
                         self.music.play(loops = -1)
                         self.on_main = False
                         return
@@ -192,11 +198,14 @@ class Controller():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:  # Restart the game
+                    if event.key == pygame.K_r:
+                        self.select_sound.play()  
                         self.restart_game()
-                    elif event.key == pygame.K_q:  # Quit the game
+                    elif event.key == pygame.K_q: 
+                        self.select_sound.play() 
                         pygame.quit()
                     elif event.key == pygame.K_x:
+                        self.select_sound.play() 
                         self.reset_high_score()
 
     def reset_high_score(self):
@@ -264,9 +273,10 @@ class Controller():
         Checks if bullets collide with enemies and deletes the enemy if there is a collision
         """""
         for bullet in self.bullet_sprites:
-            # Check collision with each enemy
+            #Check collision with each enemy
             for enemy in self.enemy_sprites:
-                if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
+                if not enemy.is_dead and pygame.sprite.collide_rect(bullet, enemy):  #Check if the bullet collides with the enemy
+                    self.collision_sound.play()
                     enemy.destroy()
                     bullet.kill()
                     self.score += 1
@@ -276,10 +286,17 @@ class Controller():
         """""
         Checks if player collide with enemies and sets up game over
         """""
-        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
-            self.game_over_screen()
+        colliding_enemies = pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask)
+        for enemy in colliding_enemies:
+            if enemy.is_active:
+                self.music.set_volume(0)
+                self.death_sound.play()
+                #Call the game over screen after a short delay
+                pygame.time.delay(3000)
+                self.music.set_volume(0.5)
+                self.game_over_screen()
 
-    # Game loop
+    #Game loop
     def mainloop(self):
         """""
         Runs throughout the whole game

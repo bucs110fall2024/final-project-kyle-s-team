@@ -21,10 +21,12 @@ class Enemy(pygame.sprite.Sprite):
         #Death Timer
         self.death_time = 0
         self.death_duration = 400
+        self.is_dead = False
 
         #Delay collision detection to avoid instakills
         self.spawn_time = pygame.time.get_ticks()
         self.delay_time = 800
+        self.is_active = False
 
     def animate(self, dt):
         if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
@@ -51,20 +53,23 @@ class Enemy(pygame.sprite.Sprite):
             self.collision("vertical")
 
     def collision(self, direction):
-        for sprite in self.collision_sprites:
-            if sprite.rect.colliderect(self.rect):
-                if direction == "horizontal":
-                    if self.direction.x > 0:
-                        self.rect.right = sprite.rect.left
-                    if self.direction.x < 0:
-                        self.rect.left = sprite.rect.right
-                elif direction == "vertical":
-                    if self.direction.y > 0:
-                        self.rect.bottom = sprite.rect.top
-                    if self.direction.y < 0:
-                        self.rect.top = sprite.rect.bottom
+        if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
+            self.is_active = True
+            for sprite in self.collision_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if direction == "horizontal":
+                        if self.direction.x > 0:
+                            self.rect.right = sprite.rect.left
+                        if self.direction.x < 0:
+                            self.rect.left = sprite.rect.right
+                    elif direction == "vertical":
+                        if self.direction.y > 0:
+                            self.rect.bottom = sprite.rect.top
+                        if self.direction.y < 0:
+                            self.rect.top = sprite.rect.bottom
 
     def destroy(self):
+        self.is_dead = True
         self.death_time = pygame.time.get_ticks()
         surface = pygame.mask.from_surface(self.frames[0]).to_surface()
         surface.set_colorkey("black")
