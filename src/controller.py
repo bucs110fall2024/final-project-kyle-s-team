@@ -38,7 +38,7 @@ class Controller():
 
         #Timer to load enemies at a random starting position
         self.enemy_event = pygame.event.custom_type()
-        pygame.time.set_timer(self.enemy_event, 300)
+        pygame.time.set_timer(self.enemy_event, 400)
         self.spawn_positions = []
 
         #Audio
@@ -56,6 +56,7 @@ class Controller():
 
         self.load_image()
         self.setup()
+        self.on_main = True
         
         
     def load_high_score(self):
@@ -85,6 +86,7 @@ class Controller():
         data = {"high_score": 0}
         with open("high_scores.json", "w") as file:
             json.dump(data, file)
+
     def save_high_score(self):
         """""
         Saves new high score to JSON file
@@ -119,6 +121,45 @@ class Controller():
                     surf = pygame.image.load(full_path).convert_alpha()
                     self.enemy_frames.append(surf)
 
+    def main_menu(self):
+        WINDOW_WIDTH = 1280
+        self.on_main = True
+
+        menu_font = pygame.font.SysFont("Arial", 50)
+        option_font = pygame.font.SysFont("Arial", 30)
+
+        title_text = menu_font.render("Vampire Survivors", True, (255, 0, 0))
+        instructions_text = option_font.render("Press P to Start | Press Q to Quit", True, (0, 0, 0))
+        
+        self.screen.fill((0, 0, 255))
+
+        title_x = (WINDOW_WIDTH - title_text.get_width()) // 2
+        title_y = 150
+        self.screen.blit(title_text, (title_x, title_y))
+
+        # Center the instructions text
+        instructions_x = (WINDOW_WIDTH - instructions_text.get_width()) // 2
+        instructions_y = 300
+        self.screen.blit(instructions_text, (instructions_x, instructions_y))
+
+        pygame.display.update()
+
+        # Wait for user input to start or quit
+        waiting_for_input = True
+        while waiting_for_input:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        self.on_main = False
+                        return
+                    elif event.key == pygame.K_q:
+                        pygame.quit()
+                        quit()
+
+
     def game_over_screen(self):
         WINDOW_WIDTH = 1280
 
@@ -130,8 +171,9 @@ class Controller():
         high_score_text = self.font.render("High Score: " + str(self.high_score), True, (255, 0, 0))
         restart_text = restart_font.render("Press R to Restart or Q to Quit", True, (0, 0, 0))
 
+        self.screen.fill((255, 255, 255))
+        
         # Blit the text to the screen
-        self.screen.fill((0, 255, 0))  # Game over screen background
         self.screen.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, 150))
         self.screen.blit(score_text, (WINDOW_WIDTH // 2 - score_text.get_width() // 2, 250))
         self.screen.blit(high_score_text, (WINDOW_WIDTH // 2 - high_score_text.get_width() // 2, 300))
@@ -235,7 +277,11 @@ class Controller():
         Runs throughout the whole game
         """""
         while self.running:
-         # Handle events
+            #Check if game started yet
+            if self.on_main:
+                self.main_menu()
+                continue
+            #Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
