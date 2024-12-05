@@ -4,15 +4,14 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load("assets/PlayerIdle/idle_0.png")
-        #self.image = pygame.image.load("assets/PlayerIdle/test.png")
+        self.image = pygame.image.load("assets/PlayerIdle/idle.png")
 
         #Animation setup
         self.walk_cycle = [
-            pygame.image.load("assets/PlayerWalk/walk_3.png").convert_alpha(), 
-            pygame.image.load("assets/PlayerWalk/walk_5.png").convert_alpha(),
-            pygame.transform.scale(pygame.image.load("assets/PlayerWalk/walk_3.png").convert_alpha(), (200, 200)),
-            pygame.transform.scale(pygame.image.load("assets/PlayerWalk/walk_5.png").convert_alpha(), (200, 200)),
+            pygame.image.load("assets/PlayerWalk/0.png").convert_alpha(), 
+            pygame.image.load("assets/PlayerWalk/1.png").convert_alpha(),
+            pygame.transform.scale(pygame.image.load("assets/PlayerWalk/0.png").convert_alpha(), (50, 50)),
+            pygame.transform.scale(pygame.image.load("assets/PlayerWalk/1.png").convert_alpha(), (50, 50)),
         ]
 
         self.frame_index = 0
@@ -20,13 +19,12 @@ class Player(pygame.sprite.Sprite):
         self.animation_speed = 100
         self.last_update = pygame.time.get_ticks()
 
-        self.image = pygame.transform.scale(self.image, (200, 200))
+        self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
         self.rect.center = pos
         
         #Create new hitbox to fix broken sprite collisions
-        self.hitbox_rect = self.rect.inflate(-150, -50)
-        #self.hitbox_rect = self.rect.inflate(0, 0)
+        self.hitbox_rect = self.rect.inflate(-20, -20)
 
         #Player movement
         self.direction = pygame.Vector2(1, 0)

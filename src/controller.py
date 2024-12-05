@@ -319,7 +319,7 @@ class Controller():
             
             # Render the score
             self.update_high_score()
-            score_text = self.font.render("Score: " + str(self.score), True, (0, 0, 0))
+            score_text = self.font.render("Score: " + str(self.score), True, (255, 0, 255))
             self.screen.blit(score_text, (10, 10)) 
             high_score_text = self.font.render("High Score: " + str(self.high_score), True, (255, 0, 0))
             self.screen.blit(high_score_text, (10, 40))

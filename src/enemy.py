@@ -16,7 +16,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox_rect = self.rect.inflate(-50, -80)
         self.collision_sprites = collision_sprites
         self.direction = pygame.Vector2()
-        self.speed = 200
+        self.speed = 150
 
         #Death Timer
         self.death_time = 0
