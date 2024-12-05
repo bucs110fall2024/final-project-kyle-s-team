@@ -25,7 +25,7 @@ class Controller():
         self.setup()
         
         #Sprites
-        self.player = Player((300, 300), self.all_sprites, self.collision_sprites)
+        # self.player = Player((300, 300), self.all_sprites, self.collision_sprites)
 
 
     def setup(self):
@@ -40,7 +40,11 @@ class Controller():
         for obj in map.get_layer_by_name("Object Layer 1"):
             SpriteCollision((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
     
-         
+        #Spawn points
+        for obj in map.get_layer_by_name("Object Layer 2"):
+            if obj.name == "Player":
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+
     # Game loop
     def mainloop(self):
         while self.running:
