@@ -17,4 +17,18 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = surface
         self.rect = self.image.get_rect(center = pos)
+        self.spawn_timer = pygame.time.get_ticks()
+        self.despawn_time = 1000
+
+        self.direction = direction
+        self.speed = 1000
+
+    def update(self, dt):
+        """""
+        Move bullet object across the screen and then despawn
+        """""
+        self.rect.center += self.direction * self.speed * dt
+        
+        if pygame.time.get_ticks() - self.spawn_timer >= self.despawn_time:
+            self.kill()
         

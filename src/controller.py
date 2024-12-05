@@ -87,8 +87,6 @@ class Controller():
 
             # Draw all sprites to the screen
             self.all_sprites.draw(self.player.rect.center)
-
-            # Update the display
             pygame.display.update()
 
 
