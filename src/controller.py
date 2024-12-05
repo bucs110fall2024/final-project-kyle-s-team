@@ -47,6 +47,10 @@ class Controller():
         self.shoot_sound.set_volume(0.5)
         self.music.play(loops = -1)
 
+        #Score
+        self.score = 0
+        self.font = pygame.font.SysFont("Arial", 30)
+
         self.load_image()
         self.setup()
 
@@ -121,8 +125,9 @@ class Controller():
                 for enemy in self.enemy_sprites:
                     if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
                         enemy.destroy()
+                        bullet.deactivate()
+                        self.score += 1
                         break
-                    bullet.deactivate()
 
     def player_collision(self):
         """""
@@ -161,10 +166,14 @@ class Controller():
             self.input()
             self.all_sprites.update(delta_time)
             self.bullet_collision()
-            # self.player_collision()
+            self.player_collision()
 
-            # Draw all sprites to the screen
             self.all_sprites.draw(self.player.rect.center)
+            
+            # Render the score
+            score_text = self.font.render("Score: " + str(self.score), True, (0, 0, 0))
+            self.screen.blit(score_text, (10, 10)) 
+
             pygame.display.update()
 
 
