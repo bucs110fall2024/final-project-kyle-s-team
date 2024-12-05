@@ -1,5 +1,6 @@
 import pygame
 import random
+import json
 
 from src.player import Player
 from src.gun import Gun
@@ -9,6 +10,7 @@ from pytmx.util_pygame import load_pygame
 from src.groups import AllSprites
 
 from os.path import join
+from os import path
 from os import walk
 
 class Controller():
@@ -49,10 +51,63 @@ class Controller():
 
         #Score
         self.score = 0
+        self.high_score = self.load_high_score()
         self.font = pygame.font.SysFont("Arial", 30)
 
         self.load_image()
         self.setup()
+
+    # def load_high_score(self):
+    #     """""
+    #     Loads high score from external data (JSON)
+    #     """""
+    #     with open("etc/high_scores.json", "r") as file:
+    #         data = json.load(file)
+    #         return data.get("high_score", 0)
+        
+        
+    def load_high_score(self):
+        """Load the high score from a JSON file."""
+        if path.exists("high_scores.json"):
+            with open("high_scores.json", "r") as file:
+                file_content = file.read().strip()  # Read and strip any extra whitespace
+
+                if not file_content:  # If the file is empty, reset it with the default value
+                    self.create_default_high_score()
+                    return 0
+                
+                try:
+                    data = json.loads(file_content)  # Load valid JSON data
+                    return data.get("high_score", 0)
+                except json.JSONDecodeError:
+                    # If the file contains invalid JSON, reset it with the default value
+                    self.create_default_high_score()
+                    return 0
+        else:
+            # If the file doesn't exist, create it with a default high score
+            self.create_default_high_score()
+            return 0
+
+    def create_default_high_score(self):
+        """Create a default high score file."""
+        data = {"high_score": 0}
+        with open("high_scores.json", "w") as file:
+            json.dump(data, file)
+    def save_high_score(self):
+        """""
+        Saves new high score to JSON file
+        """""
+        with open("high_scores.json", "w") as file:
+            json.dump({"high_score": self.score}, file)
+    
+    def update_high_score(self):
+        """""
+        Update high score if current score is higher
+        """""
+        if self.score > self.high_score:
+            self.high_score = self.score
+            self.save_high_score()  # Save the new high score to the JSON file
+
 
     #Set up images in my controller that will need to be instantiated
     def load_image(self):
@@ -81,7 +136,6 @@ class Controller():
             Bullet(self.bullet_surface, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
-
 
     def gun_reload_timer(self):
         """""
@@ -171,8 +225,11 @@ class Controller():
             self.all_sprites.draw(self.player.rect.center)
             
             # Render the score
+            self.update_high_score()
             score_text = self.font.render("Score: " + str(self.score), True, (0, 0, 0))
             self.screen.blit(score_text, (10, 10)) 
+            high_score_text = self.font.render("High Score: " + str(self.high_score), True, (255, 0, 0))
+            self.screen.blit(high_score_text, (10, 40))
 
             pygame.display.update()
 
