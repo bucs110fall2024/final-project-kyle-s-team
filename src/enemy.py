@@ -54,6 +54,9 @@ class Enemy(pygame.sprite.Sprite):
                         self.rect.bottom = sprite.rect.top
                     if self.direction.y < 0:
                         self.rect.top = sprite.rect.bottom
+
+    def destroy(self):
+        self.kill()
     
     def update(self, dt):
         self.move(dt)

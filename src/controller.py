@@ -102,6 +102,19 @@ class Controller():
             else:
                 self.spawn_positions.append((obj.x, obj.y))
 
+    def bullet_collision(self):
+        """""
+        Checks if bullets collide with enemies and deletes the enemy if there is a collision
+        """""
+        for bullet in self.bullet_sprites:
+            if bullet.active:
+                # Check collision with each enemy
+                for enemy in self.enemy_sprites:
+                    if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
+                        bullet.deactivate()
+                        enemy.destroy()
+                        break
+
     # Game loop
     def mainloop(self):
         """""
@@ -120,7 +133,7 @@ class Controller():
                             self.enemy_frames,  # Pass the list of frames
                             (self.all_sprites, self.enemy_sprites),
                             self.player,
-                            self.collision_sprites
+                            self.collision_sprites,
                         )
             delta_time = self.clock.tick() / 1000
         
@@ -131,6 +144,7 @@ class Controller():
             self.gun_reload_timer()
             self.input()
             self.all_sprites.update(delta_time)
+            self.bullet_collision()
 
             # Draw all sprites to the screen
             self.all_sprites.draw(self.player.rect.center)

@@ -23,6 +23,14 @@ class Bullet(pygame.sprite.Sprite):
         self.direction = direction
         self.speed = 1000
 
+        self.active = True #Bullet collision is being tracked
+
+    def deactivate(self):
+        """""
+        Bullet has no more possible collisions after hitting an enemy
+        """""
+        self.active = False
+        
     def update(self, dt):
         """""
         Move bullet object across the screen and then despawn
@@ -31,4 +39,3 @@ class Bullet(pygame.sprite.Sprite):
         
         if pygame.time.get_ticks() - self.spawn_timer >= self.despawn_time:
             self.kill()
-        
