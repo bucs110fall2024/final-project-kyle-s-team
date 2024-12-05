@@ -1,12 +1,20 @@
-class Gun:
+import pygame
 
-    def __init__(self, x, y, img_file):
-        """
-        Initialize player:
-        - x: int - starting x coordinate (depending on where player shoots)
-        - y: int - starting y coordinate (depending on where player shoots)
-        - img_file: str - path to img file
-        """
+class Gun(pygame.sprite.Sprite):
+    def __init__(self, player, groups):
+        self.player = player
+        self.distance = 140
+        self.player_direction = pygame.Vector2(1, 0)
+
+        super().__init__(groups)
+        self.gun_surface = pygame.image.load("assets/Gun/gun.png").convert_alpha()
+        self.image = self.gun_surface
+        self.image = pygame.transform.scale(self.image, (150, 150))
+        self.rect = self.image.get_rect(center = self.player.rect.center + self.player_direction * self.distance)
+
+
+    def update(self, _):
+        self.rect.center = self.player.rect.center + self.player_direction * self.distance
 
     def bullet(self):
         """

@@ -2,7 +2,7 @@ import pygame
 import random
 
 from src.player import Player
-from src import gun
+from src.gun import Gun
 from src import enemy
 from src.sprites import *
 from pytmx.util_pygame import load_pygame
@@ -24,8 +24,6 @@ class Controller():
 
         self.setup()
         
-        #Sprites
-        # self.player = Player((300, 300), self.all_sprites, self.collision_sprites)
 
 
     def setup(self):
@@ -44,6 +42,7 @@ class Controller():
         for obj in map.get_layer_by_name("Object Layer 2"):
             if obj.name == "Player":
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                self.gun = Gun(self.player, self.all_sprites)
 
     # Game loop
     def mainloop(self):
