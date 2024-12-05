@@ -8,6 +8,8 @@ from src.sprites import *
 from pytmx.util_pygame import load_pygame
 from src.groups import AllSprites
 
+from os.path import join
+from os import walk
 
 class Controller():
     def __init__(self):
@@ -46,16 +48,17 @@ class Controller():
         Sets up images to be used later
         """""
         self.bullet_surface = pygame.image.load("assets/Gun/bullet.png").convert_alpha()
-        
-        self.enemy_frames = {}
-        
-        self.enemy_walk_cycle = [
-            pygame.image.load("assets/EnemyWalk/walk_3.png").convert_alpha(), 
-            pygame.image.load("assets/EnemyWalk/walk_5.png").convert_alpha(),
-            pygame.transform.scale(pygame.image.load("assets/EnemyWalk/walk_3.png").convert_alpha(), (200, 200)),
-            pygame.transform.scale(pygame.image.load("assets/EnemyWalk/walk_5.png").convert_alpha(), (200, 200)),
-        ]
- 
+
+            # Load enemy frames from assets/EnemyWalk/
+        self.enemy_frames = []
+        enemy_folder_path = join('assets', 'EnemyWalk')
+
+        for _, _, file_names in walk(enemy_folder_path):
+            for file_name in sorted(file_names, key=lambda name: int(name.split('.')[0])):
+                if file_name.endswith('.png'):  # Ensure only PNG files are loaded
+                    full_path = join(enemy_folder_path, file_name)
+                    surf = pygame.image.load(full_path).convert_alpha()
+                    self.enemy_frames.append(surf)
     def input(self):
         """""
         Checks for when player inputs a command on their keyboard
@@ -110,6 +113,15 @@ class Controller():
                 if event.type == pygame.QUIT:
                     self.running = False
 
+                if event.type == self.enemy_event:
+                    if self.spawn_positions and self.enemy_frames:
+                        Enemy(
+                            random.choice(self.spawn_positions),
+                            self.enemy_frames,  # Pass the list of frames
+                            (self.all_sprites, self.enemy_sprites),
+                            self.player,
+                            self.collision_sprites
+                        )
             delta_time = self.clock.tick() / 1000
         
             # Clear the screen (green background)
