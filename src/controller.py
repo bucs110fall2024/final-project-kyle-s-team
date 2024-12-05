@@ -56,14 +56,6 @@ class Controller():
 
         self.load_image()
         self.setup()
-
-    # def load_high_score(self):
-    #     """""
-    #     Loads high score from external data (JSON)
-    #     """""
-    #     with open("etc/high_scores.json", "r") as file:
-    #         data = json.load(file)
-    #         return data.get("high_score", 0)
         
         
     def load_high_score(self):
@@ -126,6 +118,53 @@ class Controller():
                     full_path = join(enemy_folder_path, file_name)
                     surf = pygame.image.load(full_path).convert_alpha()
                     self.enemy_frames.append(surf)
+
+    def game_over_screen(self):
+        WINDOW_WIDTH = 1280
+
+        game_over_font = pygame.font.SysFont("Arial", 50)
+        restart_font = pygame.font.SysFont("Arial", 30)
+
+        game_over_text = game_over_font.render("Game Over", True, (255, 0, 0))
+        score_text = self.font.render("High Score: " + str(self.score), True, (255, 0, 0))
+        high_score_text = self.font.render("High Score: " + str(self.high_score), True, (255, 0, 0))
+        restart_text = restart_font.render("Press R to Restart or Q to Quit", True, (0, 0, 0))
+
+        # Blit the text to the screen
+        self.screen.fill((0, 255, 0))  # Game over screen background
+        self.screen.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, 150))
+        self.screen.blit(score_text, (WINDOW_WIDTH // 2 - score_text.get_width() // 2, 250))
+        self.screen.blit(high_score_text, (WINDOW_WIDTH // 2 - high_score_text.get_width() // 2, 300))
+        self.screen.blit(restart_text, (WINDOW_WIDTH // 2 - restart_text.get_width() // 2, 400))
+
+        pygame.display.update()
+
+        # Wait for user input to restart or quit
+        waiting_for_input = True
+        while waiting_for_input:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:  # Restart the game
+                        self.restart_game()
+                    elif event.key == pygame.K_q:  # Quit the game
+                        pygame.quit()
+                        quit()
+
+    def restart_game(self):
+        self.score = 0
+        self.running = True
+        self.all_sprites.empty()
+        self.enemy_sprites.empty()
+        self.collision_sprites.empty()
+        self.bullet_sprites.empty()
+
+        # Reload the game setup
+        self.setup()
+        self.mainloop()  # Start the game loop again
+
     def input(self):
         """""
         Checks for when player inputs a command on their keyboard
@@ -188,7 +227,7 @@ class Controller():
         Checks if player collide with enemies and sets up game over
         """""
         if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
-            self.running = False
+            self.game_over_screen()
 
     # Game loop
     def mainloop(self):
