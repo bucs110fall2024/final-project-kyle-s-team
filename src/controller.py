@@ -165,11 +165,13 @@ class Controller():
 
         game_over_font = pygame.font.SysFont("Arial", 50)
         restart_font = pygame.font.SysFont("Arial", 30)
+        reset_font = pygame.font.SysFont("Arial", 30)
 
         game_over_text = game_over_font.render("Game Over", True, (255, 0, 0))
         score_text = self.font.render("High Score: " + str(self.score), True, (255, 0, 0))
         high_score_text = self.font.render("High Score: " + str(self.high_score), True, (255, 0, 0))
         restart_text = restart_font.render("Press R to Restart or Q to Quit", True, (0, 0, 0))
+        reset_text = reset_font.render("Press X to Reset High Score and Restart", True, (0, 0, 0))
 
         self.screen.fill((255, 255, 255))
 
@@ -178,6 +180,7 @@ class Controller():
         self.screen.blit(score_text, (WINDOW_WIDTH // 2 - score_text.get_width() // 2, 250))
         self.screen.blit(high_score_text, (WINDOW_WIDTH // 2 - high_score_text.get_width() // 2, 300))
         self.screen.blit(restart_text, (WINDOW_WIDTH // 2 - restart_text.get_width() // 2, 400))
+        self.screen.blit(reset_text, (WINDOW_WIDTH // 2 - reset_text.get_width() // 2, 450))
 
         pygame.display.update()
 
@@ -187,13 +190,18 @@ class Controller():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:  # Restart the game
                         self.restart_game()
                     elif event.key == pygame.K_q:  # Quit the game
                         pygame.quit()
-                        quit()
+                    elif event.key == pygame.K_x:
+                        self.reset_high_score()
+
+    def reset_high_score(self):
+        self.high_score = 0
+        self.save_high_score()
+        self.restart_game()
 
     def restart_game(self):
         self.score = 0
