@@ -15,6 +15,7 @@ class Gun(pygame.sprite.Sprite):
         self.current_angle = None
         #Adjust for sprite offsets
         self.offset = pygame.Vector2(15, 15)
+        
     def rotate(self):
         """
         Rotate gun object based on direction needed to shoot
@@ -23,7 +24,12 @@ class Gun(pygame.sprite.Sprite):
         mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
         player_pos = pygame.Vector2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         #Vector math!
+        direction = mouse_pos - player_pos
         self.player_direction = (mouse_pos - player_pos).normalize()
+        if direction.length() != 0:
+            self.direction = direction.normalize()
+        else:
+            self.direction = pygame.Vector2(0, 0)
         
     def rotate_sprite(self):
         """

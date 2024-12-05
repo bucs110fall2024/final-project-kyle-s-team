@@ -47,7 +47,6 @@ class Controller():
         self.collision_sound = pygame.mixer.Sound("assets/Sounds/Sound_Effect_1.wav")
         self.music = pygame.mixer.Sound("assets/Sounds/Music.wav")
         self.shoot_sound.set_volume(0.5)
-        self.music.play(loops = -1)
 
         #Score
         self.score = 0
@@ -153,6 +152,7 @@ class Controller():
                     quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_p:
+                        self.music.play(loops = -1)
                         self.on_main = False
                         return
                     elif event.key == pygame.K_q:
@@ -172,7 +172,7 @@ class Controller():
         restart_text = restart_font.render("Press R to Restart or Q to Quit", True, (0, 0, 0))
 
         self.screen.fill((255, 255, 255))
-        
+
         # Blit the text to the screen
         self.screen.blit(game_over_text, (WINDOW_WIDTH // 2 - game_over_text.get_width() // 2, 150))
         self.screen.blit(score_text, (WINDOW_WIDTH // 2 - score_text.get_width() // 2, 250))
