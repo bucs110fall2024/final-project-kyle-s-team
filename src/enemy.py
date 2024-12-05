@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hitbox_rect = self.rect.inflate(-50, -80)
         self.collision_sprites = collision_sprites
         self.direction = pygame.Vector2()
-        self.speed = 150
+        self.speed = 200
 
         #Death Timer
         self.death_time = 0
@@ -28,35 +28,39 @@ class Enemy(pygame.sprite.Sprite):
 
         #Delay collision detection to avoid instakills
         self.spawn_time = pygame.time.get_ticks()
-        self.delay_time = 800
+        self.delay_time = 700
         self.is_active = False
 
     def animate(self, dt):
         """
         Animates the walk cycle for the enemy.
         """
-        if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
-            self.frame_index += self.animation_speed * dt
-            self.image = self.frames[int(self.frame_index) % len(self.frames)]
+        self.frame_index += self.animation_speed * dt
+        self.image = self.frames[int(self.frame_index) % len(self.frames)]
 
     def move(self, dt):
         """
         Moves the enemy, gets it direction and updates rect position
         Includes collision logic
         """
-        if pygame.time.get_ticks() - self.spawn_time >= self.delay_time: 
-            player_pos = pygame.Vector2(self.player.rect.center)
-            enemy_pos = pygame.Vector2(self.rect.center)
-            direction = player_pos - enemy_pos
-            if direction.length() > 0:
-                self.direction = direction.normalize()  #Vector math that allows for consitent movement
-            else:
-                self.direction = pygame.Vector2(0, 0)
+        player_pos = pygame.Vector2(self.player.rect.center)
+        enemy_pos = pygame.Vector2(self.rect.center)
+        direction = player_pos - enemy_pos
 
-            self.rect.x += self.direction.x * self.speed * dt
-            self.collision("horizontal")
-            self.rect.y += self.direction.y * self.speed * dt
-            self.collision("vertical")
+        if direction.length() > 0:
+            self.direction = direction.normalize()  #Vector math that allows for consitent movement
+        else:
+            self.direction = pygame.Vector2(0, 0)
+
+        if self.direction.x > 0:  # Player is to the right of the enemy
+            self.image = pygame.transform.flip(self.frames[int(self.frame_index) % len(self.frames)], False, False)
+        elif self.direction.x < 0:  # Player is to the left of the enemy
+            self.image = pygame.transform.flip(self.frames[int(self.frame_index) % len(self.frames)], True, False)
+            
+        self.rect.x += self.direction.x * self.speed * dt
+        self.collision("horizontal")
+        self.rect.y += self.direction.y * self.speed * dt
+        self.collision("vertical")
 
     def collision(self, direction):
         """
