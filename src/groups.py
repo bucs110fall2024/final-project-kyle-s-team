@@ -2,6 +2,9 @@ import pygame
 
 class AllSprites(pygame.sprite.Group):
     def __init__(self):
+        """
+        Initialize all information about the sprites.
+        """
         super().__init__()
         self.display_surface = pygame.display.get_surface()
         self.offset = pygame.Vector2()
@@ -12,6 +15,9 @@ class AllSprites(pygame.sprite.Group):
     
     #Camera
     def draw(self, target_pos):
+        """
+        Includes the math for the camera. Includes camera limits using offset.
+        """
         WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
 
         self.offset.x = -(target_pos[0] - WINDOW_WIDTH / 2)

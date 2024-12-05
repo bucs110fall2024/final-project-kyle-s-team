@@ -2,6 +2,9 @@ import pygame
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, frames, groups, player, collision_sprites, scale_factor=0.08):
+        """
+        Initialize all information about the enemy, such as the frames for the walk cycle.
+        """
         super().__init__(groups)
         self.image = pygame.image.load("assets/EnemyIdle/idle.png")
         self.player = player
@@ -29,15 +32,18 @@ class Enemy(pygame.sprite.Sprite):
         self.is_active = False
 
     def animate(self, dt):
+        """
+        Animates the walk cycle for the enemy.
+        """
         if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
             self.frame_index += self.animation_speed * dt
             self.image = self.frames[int(self.frame_index) % len(self.frames)]
 
     def move(self, dt):
-        """""
+        """
         Moves the enemy, gets it direction and updates rect position
         Includes collision logic
-        """""
+        """
         if pygame.time.get_ticks() - self.spawn_time >= self.delay_time: 
             player_pos = pygame.Vector2(self.player.rect.center)
             enemy_pos = pygame.Vector2(self.rect.center)
@@ -53,6 +59,9 @@ class Enemy(pygame.sprite.Sprite):
             self.collision("vertical")
 
     def collision(self, direction):
+        """
+        Collisions between enemies and other objects.
+        """
         if pygame.time.get_ticks() - self.spawn_time >= self.delay_time:
             self.is_active = True
             for sprite in self.collision_sprites:
@@ -69,6 +78,9 @@ class Enemy(pygame.sprite.Sprite):
                             self.rect.top = sprite.rect.bottom
 
     def destroy(self):
+        """
+        Death animation using colorkey.
+        """
         self.is_dead = True
         self.death_time = pygame.time.get_ticks()
         surface = pygame.mask.from_surface(self.frames[0]).to_surface()
@@ -76,10 +88,16 @@ class Enemy(pygame.sprite.Sprite):
         self.image = surface
 
     def death_timer(self):
+        """
+        Timer that kills enemy when finished.
+        """
         if pygame.time.get_ticks() - self.death_time >= self.death_duration:
             self.kill()
     
     def update(self, dt):
+        """
+        Updates all information about enemy.
+        """
         if self.death_time == 0:
             self.move(dt)
             self.animate(dt)

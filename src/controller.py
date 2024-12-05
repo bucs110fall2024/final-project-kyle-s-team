@@ -15,9 +15,9 @@ from os import walk
 
 class Controller():
     def __init__(self):
-        """""
+        """
         Initialize all of the important aspects of this controller class.
-        """""
+        """
         pygame.init()
         WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -64,7 +64,9 @@ class Controller():
         
         
     def load_high_score(self):
-        """Load the high score from a JSON file."""
+        """
+        Load the high score from a JSON file.
+        """
         if path.exists("high_scores.json"):
             with open("high_scores.json", "r") as file:
                 file_content = file.read().strip()  # Read and strip any extra whitespace
@@ -86,22 +88,24 @@ class Controller():
             return 0
 
     def create_default_high_score(self):
-        """Create a default high score file."""
+        """
+        Create a default high score file.
+        """
         data = {"high_score": 0}
         with open("high_scores.json", "w") as file:
             json.dump(data, file)
 
     def save_high_score(self):
-        """""
+        """
         Saves new high score to JSON file
-        """""
+        """
         with open("high_scores.json", "w") as file:
             json.dump({"high_score": self.score}, file)
     
     def update_high_score(self):
-        """""
+        """
         Update high score if current score is higher
-        """""
+        """
         if self.score > self.high_score:
             self.high_score = self.score
             self.save_high_score()  # Save the new high score to the JSON file
@@ -109,9 +113,9 @@ class Controller():
 
     #Set up images in my controller that will need to be instantiated
     def load_image(self):
-        """""
+        """
         Sets up images to be used later
-        """""
+        """
         self.bullet_surface = pygame.image.load("assets/Gun/bullet.png").convert_alpha()
         self.bullet_surface = pygame.transform.scale(self.bullet_surface, (30, 30))
 
@@ -127,6 +131,9 @@ class Controller():
                     self.enemy_frames.append(surf)
 
     def main_menu(self):
+        """
+        Creates the main menu that you see when booting up the game.
+        """
         WINDOW_WIDTH = 1280
         self.on_main = True
 
@@ -168,6 +175,9 @@ class Controller():
 
 
     def game_over_screen(self):
+        """
+        Creates the game over screen for when you die.
+        """
         WINDOW_WIDTH = 1280
 
         game_over_font = pygame.font.SysFont("Arial", 50)
@@ -209,11 +219,17 @@ class Controller():
                         self.reset_high_score()
 
     def reset_high_score(self):
+        """
+        Reset high score if you want to during the game over screen.
+        """
         self.high_score = 0
         self.save_high_score()
         self.restart_game()
 
     def restart_game(self):
+        """
+        Restart the game by emptying all of the current sprites.
+        """
         self.score = 0
         self.running = True
         self.all_sprites.empty()
@@ -226,9 +242,9 @@ class Controller():
         self.mainloop()  # Start the game loop again
 
     def input(self):
-        """""
-        Checks for when player inputs a command on their keyboard
-        """""
+        """
+        Checks for when player inputs a command on their keyboard.
+        """
         if pygame.mouse.get_pressed()[0] and self.can_shoot: #Left mouse button is index 0
             self.shoot_sound.play()
             pos = self.gun.rect.center + self.gun.player_direction * 50
@@ -237,18 +253,18 @@ class Controller():
             self.shoot_time = pygame.time.get_ticks()
 
     def gun_reload_timer(self):
-        """""
-        Makes sure you can't just spam bullets and lag out the game
-        """""
+        """
+        Makes sure you can't just spam bullets and lag out the game.
+        """
         if not self.can_shoot:
             current_time = pygame.time.get_ticks()
             if current_time - self.shoot_time >= self.gun_reload:
                 self.can_shoot = True
 
     def setup(self):
-        """""
-        Sets up the tilemap
-        """""
+        """
+        Sets up the tilemap.
+        """
         TILE_SIZE = 48
         map = load_pygame("assets/world.tmx")
         
@@ -269,9 +285,9 @@ class Controller():
                 self.spawn_positions.append((obj.x, obj.y))
 
     def bullet_collision(self):
-        """""
-        Checks if bullets collide with enemies and deletes the enemy if there is a collision
-        """""
+        """
+        Checks if bullets collide with enemies and deletes the enemy if there is a collision.
+        """
         for bullet in self.bullet_sprites:
             #Check collision with each enemy
             for enemy in self.enemy_sprites:
@@ -283,9 +299,9 @@ class Controller():
                     break
 
     def player_collision(self):
-        """""
-        Checks if player collide with enemies and sets up game over
-        """""
+        """
+        Checks if player collide with enemies and sets up game over.
+        """
         colliding_enemies = pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask)
         for enemy in colliding_enemies:
             if enemy.is_active:
@@ -298,9 +314,9 @@ class Controller():
 
     #Game loop
     def mainloop(self):
-        """""
-        Runs throughout the whole game
-        """""
+        """
+        Runs throughout the whole game.
+        """
         while self.running:
             #Check if game started yet
             if self.on_main:

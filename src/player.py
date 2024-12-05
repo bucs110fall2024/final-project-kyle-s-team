@@ -3,6 +3,9 @@ import pygame
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, groups, collision_sprites):
+        """
+        Initialize all information about the player, such as the frames for the walk cycle.
+        """
         super().__init__(groups)
         self.image = pygame.image.load("assets/PlayerIdle/idle.png")
 
@@ -33,6 +36,9 @@ class Player(pygame.sprite.Sprite):
         self.flipped = False
 
     def input(self):
+        """
+        Input for moving with arrow keys or WASD.
+        """
         #Player control
         keys = pygame.key.get_pressed()
         self.direction.x = int(keys[pygame.K_RIGHT] or keys[pygame.K_d]) - int(keys[pygame.K_LEFT] or keys[pygame.K_a])
@@ -47,13 +53,19 @@ class Player(pygame.sprite.Sprite):
             self.flipped = False
 
     def move(self, dt):
+        """
+        Updates location and checks for collision every update.
+        """
         self.hitbox_rect.x += self.direction.x * self.speed * dt
         self.collision("horizontal")
         self.hitbox_rect.y += self.direction.y * self.speed * dt
         self.collision("vertical")
         self.rect.center = self.hitbox_rect.center
 
-    def animate(self, dt):
+    def animate(self, _):
+        """
+        Animates the walk cycle.
+        """
         now = pygame.time.get_ticks()
         if self.direction.length() > 0:
             if now - self.last_update > self.frame_delay:
@@ -69,11 +81,17 @@ class Player(pygame.sprite.Sprite):
                     self.last_update = now
         
     def update(self, dt):
+        """
+        Update all player information.
+        """
         self.input()
         self.move(dt)
         self.animate(dt)
         
     def collision(self, direction):
+        """
+        Collision detection with the players hitbox.
+        """
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direction == "horizontal":
