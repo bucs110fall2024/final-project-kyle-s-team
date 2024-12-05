@@ -111,9 +111,16 @@ class Controller():
                 # Check collision with each enemy
                 for enemy in self.enemy_sprites:
                     if pygame.sprite.collide_rect(bullet, enemy):  # Check if the bullet collides with the enemy
-                        bullet.deactivate()
                         enemy.destroy()
                         break
+                    bullet.deactivate()
+
+    def player_collision(self):
+        """""
+        Checks if player collide with enemies and sets up game over
+        """""
+        if pygame.sprite.spritecollide(self.player, self.enemy_sprites, False, pygame.sprite.collide_mask):
+            self.running = False
 
     # Game loop
     def mainloop(self):
@@ -145,6 +152,7 @@ class Controller():
             self.input()
             self.all_sprites.update(delta_time)
             self.bullet_collision()
+            self.player_collision()
 
             # Draw all sprites to the screen
             self.all_sprites.draw(self.player.rect.center)

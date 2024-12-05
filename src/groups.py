@@ -8,7 +8,7 @@ class AllSprites(pygame.sprite.Group):
     
     #Camera
     def draw(self, target_pos):
-        WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
+        WINDOW_HEIGHT = 720
         self.offset.x = -(target_pos[0] - WINDOW_HEIGHT / 2)
         self.offset.y = -(target_pos[1] - WINDOW_HEIGHT / 2)
         for sprite in self:

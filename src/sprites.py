@@ -39,3 +39,4 @@ class Bullet(pygame.sprite.Sprite):
         
         if pygame.time.get_ticks() - self.spawn_timer >= self.despawn_time:
             self.kill()
+            self.active = True
